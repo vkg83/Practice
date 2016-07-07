@@ -30,7 +30,7 @@ public class SpendReport {
     private Date lastModified;
     private long runId;
     private Long polkDealerInfoId;
-    private Long customerGroupId;
+    @Value private Long customerGroupId;
 
     @Override
     public String toString() {
