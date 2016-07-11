@@ -11,14 +11,14 @@ public class ShopperStopTest {
     @Before
     public void setUp() throws Exception {
         shopperStop = new ShopperStop();
-        shopperStop.addSlab(ShopperStop.CustomerType.REGULAR, 0, 0);
-        //shopperStop.addSlab(ShopperStop.CustomerType.REGULAR, 5001, 10);
-        //shopperStop.addSlab(ShopperStop.CustomerType.REGULAR, 10001, 20);
+        shopperStop.addSlab(ShopperStop.CustomerType.REGULAR, 5000, 0);
+        //shopperStop.addSlab(ShopperStop.CustomerType.REGULAR, 10000, 10);
+        //shopperStop.addSlab(ShopperStop.CustomerType.REGULAR, Double.MAX_VALUE, 20);
 
-        shopperStop.addSlab(ShopperStop.CustomerType.PREMIUM, 0, .10);
-        shopperStop.addSlab(ShopperStop.CustomerType.PREMIUM, 4000, .15);
-        shopperStop.addSlab(ShopperStop.CustomerType.PREMIUM, 8001, 20);
-        //shopperStop.addSlab(ShopperStop.CustomerType.PREMIUM, 12001, 30);
+        shopperStop.addSlab(ShopperStop.CustomerType.PREMIUM, 4000, .10);
+        shopperStop.addSlab(ShopperStop.CustomerType.PREMIUM, 8000, .15);
+        shopperStop.addSlab(ShopperStop.CustomerType.PREMIUM, 12000, 20);
+        //shopperStop.addSlab(ShopperStop.CustomerType.PREMIUM, Double.MAX_VALUE, 30);
     }
 
     @Test

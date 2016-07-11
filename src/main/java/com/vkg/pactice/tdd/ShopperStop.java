@@ -11,21 +11,21 @@ public class ShopperStop {
         double billAmount = 0;
         final List<Pair> discountList = discountMap.get(type);
         if(discountList.size() > 2) {
-            if(purchaseAmount > discountList.get(2).start) {
-                billAmount += discountList.get(2).start * getMultiplier(discountList.get(1).percent);
-                purchaseAmount -= discountList.get(2).start;
+            if(purchaseAmount > discountList.get(2).max) {
+                billAmount += discountList.get(2).max * getMultiplier(discountList.get(1).percent);
+                purchaseAmount -= discountList.get(2).max;
                 billAmount += purchaseAmount * getMultiplier(discountList.get(2).percent);
             }
         }
-        if(discountList.size() > 1) {
-            if(purchaseAmount > discountList.get(1).start) {
-                billAmount += discountList.get(1).start * getMultiplier(discountList.get(0).percent);
-                purchaseAmount -= discountList.get(1).start;
-                billAmount += purchaseAmount * getMultiplier(discountList.get(1).percent);
+        if(discountList.size() <= 1) {
+            if(purchaseAmount > discountList.get(0).max) {
+                billAmount += discountList.get(0).max * getMultiplier(discountList.get(0).percent);
+                purchaseAmount -= discountList.get(0).max;
+                billAmount += purchaseAmount * getMultiplier(discountList.get(0).percent);
             }
         }
 
-        if(purchaseAmount > discountList.get(0).start){
+        if(purchaseAmount > discountList.get(0).max){
             billAmount += purchaseAmount * getMultiplier(discountList.get(0).percent);
         }
 
@@ -37,23 +37,23 @@ public class ShopperStop {
         return 1 - percent;
     }
 
-    public void addSlab(final CustomerType type, final double start, double percentage) {
+    public void addSlab(final CustomerType type, final double max, double percentage) {
         List<Pair> list = discountMap.get(type);
         if(list == null) {
             list = new ArrayList<>();
             discountMap.put(type, list);
         }
-        list.add(new Pair(start, percentage));
+        list.add(new Pair(max, percentage));
     }
 
     public enum CustomerType { PREMIUM, REGULAR}
 
     private class Pair {
-        private double start;
+        private double max;
         private double percent;
 
-        public Pair(final double start, final double percentage) {
-            this.start = start;
+        public Pair(final double max, final double percentage) {
+            this.max = max;
             this.percent = percentage;
         }
     }

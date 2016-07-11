@@ -47,6 +47,13 @@ public class MathUtilTest {
         Assert.assertEquals((long)Math.pow(x, y) % z, pow);
 
     }
+
+    @Test
+    public void shouldGetIfPower() throws Exception {
+        Assert.assertTrue(math.isPower(4));
+        Assert.assertFalse(math.isPower(28));
+
+    }
 }
 
 /*

@@ -1,5 +1,7 @@
 package com.vkg.pactice.math;
 
+import java.math.BigInteger;
+
 public class MathUtil {
     public int sqrt(int a) {
         if(a < 2) return a;
@@ -31,6 +33,37 @@ public class MathUtil {
         }
         c = (d + c) % d;
         return (int) c;
+    }
+
+    public boolean isPower(int x) {
+        int i = 2;
+
+        int previousFactorCount = 0;
+
+        while(x > 1) {
+            int factorCount = 0;
+            while (x % i == 0) {
+                x /= i;
+                factorCount++;
+            }
+
+            if(factorCount > 0 && previousFactorCount == 0) {
+                previousFactorCount = factorCount;
+            }
+
+            if(previousFactorCount != factorCount) {
+                return false;
+            }
+
+            i = nextPrime(i);
+        }
+
+        return true;
+    }
+
+    private int nextPrime(final int i) {
+        BigInteger b = BigInteger.valueOf(i);
+        return b.nextProbablePrime().intValue();
     }
 }
 
