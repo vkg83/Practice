@@ -6,7 +6,7 @@ import java.util.List;
 public class SortedItemCount {
     public static void main(String[] args) {
         SortedItemCount count = new SortedItemCount();
-        int c = count.findCount(Arrays.asList(5, 7, 7, 8, 8, 10), 10);
+        int c = count.findCount(Arrays.asList(5, 7, 7, 8, 8,10, 10), 10);
         System.out.println(c);
     }
 

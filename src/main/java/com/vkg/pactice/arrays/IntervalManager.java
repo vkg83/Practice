@@ -10,7 +10,7 @@ public class IntervalManager {
         int pos = 0;
         for (int i = 0; i < intervals.size();) {
             Interval cur = intervals.get(i);
-             if(cur.end < newInterval.start && newInterval.end < cur.start) {
+             if(cur.end < newInterval.start || newInterval.end < cur.start) {
                  i++;
                  continue;
              }

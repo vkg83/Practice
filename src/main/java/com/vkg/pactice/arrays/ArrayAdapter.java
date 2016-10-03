@@ -44,11 +44,7 @@ public class ArrayAdapter {
     private Collection createNewCollection(final String outType) {
         try {
             return Collection.class.cast(Class.forName(outType).newInstance());
-        } catch (InstantiationException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
+        } catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
             e.printStackTrace();
         }
 

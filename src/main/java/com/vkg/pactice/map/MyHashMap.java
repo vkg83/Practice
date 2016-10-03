@@ -1,4 +1,4 @@
-package com.vkg.pactice.graphs;
+package com.vkg.pactice.map;
 
 import java.util.Collection;
 import java.util.Map;
