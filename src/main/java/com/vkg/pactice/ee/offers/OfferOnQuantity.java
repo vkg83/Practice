@@ -16,7 +16,16 @@ public class OfferOnQuantity implements Offer<ShoppingCartItem> {
     public void apply(ShoppingCartItem item) {
         int qty = item.getQuantity();
         double unitPrice = item.getUnitPrice();
-        double value = (qty / (baseCount + freeCount)) * unitPrice;
+        final int pairs = qty / (baseCount + freeCount);
+        double value = pairs * freeCount * unitPrice;
         item.setDiscount(value);
+    }
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("Offer -");
+        sb.append(" Buy ").append(baseCount);
+        sb.append(" Get ").append(freeCount);
+        return sb.toString();
     }
 }
