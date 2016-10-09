@@ -49,10 +49,17 @@ public class MathUtilTest {
     }
 
     @Test
-    public void shouldGetIfPower() throws Exception {
+    public void shouldCheckIfPower() throws Exception {
         Assert.assertTrue(math.isPower(4));
         Assert.assertFalse(math.isPower(28));
 
+    }
+
+    @Test
+    public void shouldTestInfinity() {
+        double s = 0;
+        Double d = 1.0/0.0;
+        System.out.println(d == Double.POSITIVE_INFINITY);
     }
 }
 
