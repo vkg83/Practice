@@ -1,5 +1,7 @@
 package com.vkg.pactice.loan.maxgain;
 
+import com.vkg.pactice.loan.maxgain.trans.TransactionBuilders;
+
 import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -24,7 +26,7 @@ public class TransactionManager {
     }
 
     private Transaction getMonthEndTransaction(YearMonth yearMonth) {
-        return new Transaction.Builder()
+        return TransactionBuilders.general()
                 .on(1, yearMonth.plusMonths(1))
                 .build();
     }
@@ -36,8 +38,7 @@ public class TransactionManager {
     }
 
     private Transaction getEmiTransaction(YearMonth yearMonth) {
-        return new Transaction.Builder().emi(config.getEmi())
-                .on(config.getEmiDay(), yearMonth)
+        return TransactionBuilders.emi().on(config.getEmiDay(), yearMonth)
                 .build();
     }
 

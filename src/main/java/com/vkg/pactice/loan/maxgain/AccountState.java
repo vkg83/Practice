@@ -1,5 +1,7 @@
 package com.vkg.pactice.loan.maxgain;
 
+import com.vkg.pactice.loan.maxgain.trans.TransactionBuilders;
+
 import java.time.YearMonth;
 
 public class AccountState {
@@ -12,10 +14,9 @@ public class AccountState {
 
     public AccountState(LoanConfig config) {
         this.config = config;
-        //rate = config.getDailyInterestFactor();
         drawingPower = 0;
         limit = config.getAmount();
-        transaction = new Transaction.Builder().on(1, config.getYearMonth()).build();
+        transaction = TransactionBuilders.general().on(config.getStartDay(), config.getYearMonth()).build();
     }
 
     public void disburse(double amount) {
@@ -45,7 +46,7 @@ public class AccountState {
 
     @Override
     public String toString() {
-        return String.format("%11.2f | %11.2f | %11.2f | %11.2f", limit+balance, getAvailableBalance(), getBookBalance(), drawingPower);
+        return String.format("%11.2f | %11.2f | %11.2f | %11.2f", limit+balance, getAvailableBalance(), getBookBalance(), balance);
     }
 
     public void withdrawInterest(double amount) {
@@ -71,7 +72,8 @@ public class AccountState {
         e.balance = getBookBalance();
         e.days = transaction.getDays(this.transaction);
         double rate = config.getDailyInterestFactor();
-        e.interest = rate * e.days * getBookBalance();
+        e.interest = rate * e.days * e.balance;
+        e.interest = e.interest < 0 ? 0 : e.interest;
         e.limit = drawingPower;
         transaction.transact(this);
         this.transaction = transaction;

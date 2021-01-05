@@ -11,6 +11,7 @@ public class LoanConfig {
     private int emiDay;
     private int startDay;
     private YearMonth startYearMonth;
+    private double emi;
 
     public void setAmount(double amount) {
         this.amount = amount;
@@ -37,8 +38,12 @@ public class LoanConfig {
     }
 
     public double getEmi() {
-        double rate = getInterestFactor(12);
-        return (amount * rate * Math.pow(1 + rate, durationInMonth)) / (Math.pow(1 + rate, durationInMonth) - 1);
+        if(emi - 0 < 0.00001) {
+            double rate = getInterestFactor(12);
+            emi = (amount * rate * Math.pow(1 + rate, durationInMonth)) / (Math.pow(1 + rate, durationInMonth) - 1);
+        }
+
+        return emi;
     }
 
     public void setEmiDay(int emiDay) {
@@ -64,6 +69,10 @@ public class LoanConfig {
 
     public YearMonth getYearMonth() {
         return startYearMonth;
+    }
+
+    public int getStartDay() {
+        return startDay;
     }
 
     public double getPrinciple(YearMonth yearMonth) {

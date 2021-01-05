@@ -9,4 +9,10 @@ public class Emi extends Transaction {
         state.depositEmi(getYearMonth());
     }
 
+    public static class Builder extends AbstractBuilder<Builder> {
+        @Override
+        public Transaction createTransaction() {
+            return new Emi();
+        }
+    }
 }
