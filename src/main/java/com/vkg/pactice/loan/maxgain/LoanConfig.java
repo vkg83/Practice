@@ -1,5 +1,6 @@
 package com.vkg.pactice.loan.maxgain;
 
+import java.time.LocalDate;
 import java.time.Month;
 import java.time.YearMonth;
 import java.time.temporal.ChronoUnit;
@@ -9,8 +10,7 @@ public class LoanConfig {
     private double interestRate;
     private int durationInMonth;
     private int emiDay;
-    private int startDay;
-    private YearMonth startYearMonth;
+    private LocalDate startDate;
     private double emi;
 
     public void setAmount(double amount) {
@@ -63,21 +63,20 @@ public class LoanConfig {
     }
 
     public void setStartDate(int day, Month month, int year) {
-        startDay = day;
-        startYearMonth = YearMonth.of(year, month);
+        startDate = LocalDate.of(year, month, day);
     }
 
     public YearMonth getYearMonth() {
-        return startYearMonth;
+        return YearMonth.from(startDate);
     }
 
     public int getStartDay() {
-        return startDay;
+        return startDate.getDayOfMonth();
     }
 
     public double getPrinciple(YearMonth yearMonth) {
         double rate = getInterestFactor(12);
-        int period = (int)startYearMonth.until(yearMonth, ChronoUnit.MONTHS);
+        int period = (int)getYearMonth().until(yearMonth, ChronoUnit.MONTHS);
         return (period>0)? Finance.ppmt(rate, period, this.durationInMonth, -amount):0;
     }
 
@@ -88,7 +87,7 @@ public class LoanConfig {
                 ", interestRate=" + interestRate +
                 ", durationInMonth=" + durationInMonth +
                 ", emiDay=" + emiDay +
-                ", startDate=" + startYearMonth.atDay(startDay) +
+                ", startDate=" + startDate +
                 '}';
     }
 }

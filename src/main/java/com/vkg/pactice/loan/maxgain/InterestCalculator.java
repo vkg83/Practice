@@ -1,72 +1,75 @@
 package com.vkg.pactice.loan.maxgain;
 
+import com.vkg.pactice.loan.maxgain.trans.Transaction;
+import com.vkg.pactice.loan.maxgain.trans.TransactionManager;
+import com.vkg.pactice.loan.maxgain.trans.builders.TransactionBuilders;
+
 import java.time.YearMonth;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static java.time.Month.APRIL;
-
 public class InterestCalculator {
     private final LoanConfig config;
     private final TransactionManager transactionManager;
+    private final LoanAccount account;
+    private Transaction lastTr;
+    private AmountAccumulator accumulator;
 
     public InterestCalculator(LoanConfig config, TransactionManager transactionManager) {
         this.config = config;
+        this.account = new LoanAccount();
         this.transactionManager = transactionManager;
+        this.lastTr = TransactionBuilders.withdraw(0).on(config.getStartDay(), config.getYearMonth()).build();
     }
 
-    public List<BookEntry> printSheet() {
-        AccountState state = new AccountState(config);
+    public void setAccumulator(AmountAccumulator accumulator) {
+        this.accumulator = accumulator;
+    }
+
+    public List<BookEntry> calculate() {
         YearMonth yearMonth = config.getYearMonth();
-        double totalInterest = 0;
-        double fyInterest = 0;
-        double fyPrinciple = 0;
         List<BookEntry> entryList = new ArrayList<>();
-
-        double emi = config.getEmi();
-        System.out.println("+--------------------------------------------------------------------+");
-        System.out.println("|  #| Month    | Interest  | Limit       | Available   | Book Balance|");
-        System.out.println("|--------------+-----------+-------------+-------------+-------------|");
-        YearMonth now = YearMonth.now();
         for (int i = 0; i < config.getDurationInMonth(); i++) {
-            List<BookEntry> entries = calculateEntry(state, yearMonth);
-            entryList.addAll(entries);
-            double interest = entries.stream().map(e->e.interest).reduce(0.0, (a, b) ->  a + b);
-            if(interest < 0) interest = 0;
-            print("|%3d| %s | %6.0f.00 | %s |%s", i+1, yearMonth.format(DateTimeFormatter.ofPattern("MMM yyyy")), interest, state, yearMonth.equals(now)?" >Current":"");
-            state.withdrawInterest(interest);
-            fyInterest+= interest;
-            fyPrinciple+= config.getPrinciple(yearMonth);
+            List<BookEntry> entries = calculateEntry(yearMonth);
             yearMonth = yearMonth.plusMonths(1);
-            if(yearMonth.getMonth() == APRIL || (interest <= 0 && yearMonth.getYear() >= 2022)) {
-                System.out.println("+------------------------------------------------------+-------------+");
-                print("FY %d : Interest = %.0f, Principle = %.0f, Total = %.0f", yearMonth.getYear(), fyInterest, fyPrinciple, fyInterest+fyPrinciple);
-                System.out.println("+------------------------------------------------------+-------------+");
-                totalInterest += fyInterest;
-                fyInterest = 0;
-                fyPrinciple = 0;
+            if(entries.size() > 0) {
+                entryList.addAll(entries);
             }
-            if(interest <= 0 && yearMonth.getYear() >= 2022) break;
         }
-
-        System.out.println("+--------------------------------------------------------------------+");
-        print("Balance:        %12.2f", state.getBalance());
-        print("Interest Saved: %12.2f", state.getEmiBalance());
-        print("Interest Payed: %12.2f", totalInterest);
-
-//        entryList.forEach(System.out::println);
         return entryList;
     }
 
-    private void print(String format, Object... values) {
-        System.out.println(String.format(format, values));
+    private List<BookEntry> calculateEntry(YearMonth yearMonth) {
+        return transactionManager.findTransactionsFor(yearMonth).stream()
+                .map(this::toEntry)
+                .filter(e -> e.balance >= 0|| !YearMonth.now().isBefore(yearMonth))
+                .collect(Collectors.toList());
     }
 
-    private List<BookEntry> calculateEntry(AccountState state, YearMonth yearMonth) {
-        return transactionManager.findTransactionsFor(yearMonth).stream()
-                .map(state::getSnapshot)
-                .collect(Collectors.toList());
+    private BookEntry toEntry(Transaction transaction) {
+        BookEntry e = new BookEntry();
+        e.message = transaction.getMessage();
+        e.date = transaction.getDate();
+        e.days = transaction.getDays(this.lastTr);
+        account.apply(e);
+        e.interest = calculateInterest(transaction);
+        return e;
+    }
+
+    private double calculateInterest(Transaction transaction) {
+        int days = transaction.getDays(this.lastTr);
+        double interest = calculateInterest(days);
+        accumulator.accumulate(interest);
+        transaction.transact(account);
+        this.lastTr = transaction;
+        return interest;
+    }
+
+    private double calculateInterest(int days) {
+        double balance = -account.getBalance();
+        double rate = config.getDailyInterestFactor();
+        double interest = rate * days * balance;
+        return interest < 0 ? 0 : interest;
     }
 }

@@ -1,12 +1,13 @@
 package com.vkg.pactice.stack;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Stack;
 
 public class NearestSmallerElement {
-    public ArrayList<Integer> prevSmaller(ArrayList<Integer> arr) {
-        Stack<Integer> stack = new Stack<Integer>();
-        ArrayList<Integer> result = new ArrayList<Integer>();
+    public ArrayList<Integer> prevSmaller(List<Integer> arr) {
+        Stack<Integer> stack = new Stack<>();
+        ArrayList<Integer> result = new ArrayList<>();
         for(int val : arr) {
             while(!stack.isEmpty() && val <= stack.peek()) {
                 stack.pop();

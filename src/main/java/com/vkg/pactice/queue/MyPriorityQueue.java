@@ -2,34 +2,36 @@ package com.vkg.pactice.queue;
 
 import java.util.ArrayList;
 
-public class MyPriorityQueue {
-    ArrayList<Integer> queue = new ArrayList<>();
+public class MyPriorityQueue<E extends Comparable<E>> {
+    ArrayList<E> queue = new ArrayList<>();
 
     public void print() {
-        int max = 1;
-        int end = 0;
+        int itemsInLevel = 1;
+        int previousEnd = 0;
         final int size = queue.size();
-        while (end < size) {
-            for (int i = end; i < max + end; i++) {
+        while (previousEnd < size) {
+            int start = previousEnd;
+            int end = start + itemsInLevel;
+            for (int i = start; i < end; i++) {
                 System.out.print(" " + queue.get(i));
             }
             System.out.println();
-            end = max + end;
-            max *= 2;
+            previousEnd = end;
+            itemsInLevel *= 2;
         }
     }
 
-    public void add(int value) {
+    public void add(E value) {
         queue.add(value);
         shiftUp(queue.size() - 1);
     }
 
-    public int remove() {
+    public E remove() {
         if(queue.isEmpty()) {
-            new RuntimeException("Empty queue");
+            throw new RuntimeException("Empty queue");
         }
-        int value = queue.get(0);
-        int last = queue.remove(queue.size() - 1);
+        E value = queue.get(0);
+        E last = queue.remove(queue.size() - 1);
         if(queue.size() >= 1) {
             queue.set(0, last);
             shiftDown(0);
@@ -41,7 +43,7 @@ public class MyPriorityQueue {
     private void shiftDown(final int pos) {
         int child = getChild(pos);
 
-        if(child < 0 || queue.get(pos) >= queue.get(child)) {
+        if(child < 0 || queue.get(pos).compareTo(queue.get(child)) >= 0) {
             return;
         }
 
@@ -57,7 +59,7 @@ public class MyPriorityQueue {
         int right = left + 1;
 
         int result = left;
-        if(left < size && right < size && queue.get(left) < queue.get(right)) {
+        if(left < size && right < size && queue.get(left).compareTo(queue.get(right)) < 0) {
             result = right;
         }
 
@@ -66,7 +68,7 @@ public class MyPriorityQueue {
 
     private void shiftUp(final int pos) {
         int parent = getParent(pos);
-        if(parent < 0 || queue.get(parent) >= queue.get(pos)) {
+        if(parent < 0 || queue.get(parent).compareTo(queue.get(pos)) >= 0) {
             return;
         }
 
@@ -76,7 +78,7 @@ public class MyPriorityQueue {
     }
 
     private void swap(final int pos, final int parent) {
-        int tmp = queue.get(pos);
+        E tmp = queue.get(pos);
         queue.set(pos, queue.get(parent));
         queue.set(parent, tmp);
     }

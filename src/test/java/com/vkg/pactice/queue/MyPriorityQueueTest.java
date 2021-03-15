@@ -6,7 +6,7 @@ import org.junit.Test;
 public class MyPriorityQueueTest {
     @Test
     public void shouldName() throws Exception {
-        MyPriorityQueue queue = new MyPriorityQueue();
+        MyPriorityQueue<Integer> queue = new MyPriorityQueue<>();
         queue.add(5);
         queue.add(7);
         queue.add(6);
@@ -15,12 +15,23 @@ public class MyPriorityQueueTest {
         queue.add(1);
         queue.add(10);
         queue.print();
-        Assert.assertEquals(10, queue.remove());
-        Assert.assertEquals(9, queue.remove());
-        Assert.assertEquals(7, queue.remove());
-        Assert.assertEquals(6, queue.remove());
-        Assert.assertEquals(5, queue.remove());
-        Assert.assertEquals(3, queue.remove());
-        Assert.assertEquals(1, queue.remove());
+        Assert.assertEquals(Integer.valueOf(10), queue.remove());
+        Assert.assertEquals(Integer.valueOf(9), queue.remove());
+        Assert.assertEquals(Integer.valueOf(7), queue.remove());
+        Assert.assertEquals(Integer.valueOf(6), queue.remove());
+        Assert.assertEquals(Integer.valueOf(5), queue.remove());
+        Assert.assertEquals(Integer.valueOf(3), queue.remove());
+        Assert.assertEquals(Integer.valueOf(1), queue.remove());
+    }
+    @Test
+    public void shouldSwapDown() throws Exception {
+        MyPriorityQueue<Integer> queue = new MyPriorityQueue<>();
+        queue.add(5);
+        queue.add(7);
+        queue.add(6);
+        queue.print();
+        Assert.assertEquals(Integer.valueOf(7), queue.remove());
+        Assert.assertEquals(Integer.valueOf(6), queue.remove());
+        Assert.assertEquals(Integer.valueOf(5), queue.remove());
     }
 }

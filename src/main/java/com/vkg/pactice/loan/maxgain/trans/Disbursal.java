@@ -1,25 +1,34 @@
 package com.vkg.pactice.loan.maxgain.trans;
 
-import com.vkg.pactice.loan.maxgain.AccountState;
-import com.vkg.pactice.loan.maxgain.Transaction;
+import com.vkg.pactice.loan.maxgain.Account;
+import com.vkg.pactice.loan.maxgain.Transactional;
 
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
-public class Disbursal extends Transaction {
+public class Disbursal extends AbstractTransaction {
     private double amount;
 
-    @Override
-    public void transact(AccountState state) {
-        state.disburse(amount);
-        String date = getYearMonth().atDay(getDay()).format(DateTimeFormatter.ofPattern("dd MMM yyyy"));
-        System.out.println(String.format("Disbursed %.2f on %s", amount, date));
+    public Disbursal(LocalDate date) {
+        super(date);
     }
 
-    public static class Builder extends AbstractBuilder<Builder> {
+    @Override
+    public String getMessage() {
+        String date = getDate().format(DateTimeFormatter.ofPattern("dd MMM yyyy"));
+        return String.format("Disbursed %.2f on %s", amount, date);
+    }
+
+    @Override
+    public void transact(Account state) {
+        state.withdraw(amount);
+    }
+
+    public static class Builder extends DatedBuilder<Builder> {
         private double amount;
         @Override
-        public Disbursal createTransaction() {
-            Disbursal tr = new Disbursal();
+        public Disbursal createTransaction(LocalDate date) {
+            Disbursal tr = new Disbursal(date);
             tr.amount = amount;
             return tr;
         }

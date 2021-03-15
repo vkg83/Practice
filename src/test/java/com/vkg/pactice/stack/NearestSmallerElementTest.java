@@ -29,10 +29,8 @@ public class NearestSmallerElementTest {
     }
 
     private void verify(final List<Integer> input, final List<Integer> output) {
-        final ArrayList<Integer> arr = new ArrayList<Integer>(input);
-        final ArrayList<Integer> expected = new ArrayList<Integer>(output);
-        final ArrayList<Integer> result = nearestSmallerElement.prevSmaller(arr);
-        Assert.assertEquals(expected, result);
+        final ArrayList<Integer> result = nearestSmallerElement.prevSmaller(input);
+        Assert.assertEquals(output, result);
     }
 
     @Test
