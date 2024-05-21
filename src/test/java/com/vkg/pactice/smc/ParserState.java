@@ -1,0 +1,5 @@
+package com.vkg.pactice.smc;
+
+public enum ParserState {
+    FUNCTION, OPEN, END, FUNCTION_NAME, FUNCTION_PARAM, FUNCTION_NAME_AS_PARAM, NESTED_FUNCTION_PARAM, KEYWORD_IF
+}
